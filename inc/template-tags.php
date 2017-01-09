@@ -259,9 +259,19 @@ function edin_post_thumbnail() {
  * Display featured pages.
  */
 function edin_featured_pages() {
-	$featured_page_1 = esc_attr( get_theme_mod( 'edin_featured_page_one_front_page', '0' ) );
-	$featured_page_2 = esc_attr( get_theme_mod( 'edin_featured_page_two_front_page', '0' ) );
-	$featured_page_3 = esc_attr( get_theme_mod( 'edin_featured_page_three_front_page', '0' ) );
+	// $featured_page_1 = esc_attr( get_theme_mod( 'edin_featured_page_one_front_page', '0' ) );
+	// $featured_page_2 = esc_attr( get_theme_mod( 'edin_featured_page_two_front_page', '0' ) );
+	// $featured_page_3 = esc_attr( get_theme_mod( 'edin_featured_page_three_front_page', '0' ) );
+	$args = array( 'numberposts' => '3');
+	$recent_posts = wp_get_recent_posts($args);
+
+	$featured_page_1 = esc_attr('0');
+	$featured_page_2 = esc_attr('0');
+	$featured_page_3 = esc_attr('0');
+
+	foreach($recent_posts as $idx => $post) {
+		${'featured_page_'.($idx+1)} = esc_attr($post['ID']);
+	}
 
 	if ( 0 == $featured_page_1 && 0 == $featured_page_2 && 0 == $featured_page_3 ) {
 		return;
@@ -278,7 +288,7 @@ function edin_featured_pages() {
 						<?php
 							// Create new argument using the page ID of the page set in the customizer
 							$featured_page_args = array(
-								'page_id' => ${'featured_page_' . $page_number},
+								'p' => ${'featured_page_' . $page_number},
 							);
 							// Create a new WP_Query using the argument previously created
 							$featured_page_query = new WP_Query( $featured_page_args );
